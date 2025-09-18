@@ -1,10 +1,8 @@
-// lib/presentation/screens/itinerary/itinerary_created_screen.dart
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:itinerary_ai/core/navigation/app_router.dart';
 import 'package:itinerary_ai/core/theme/app_theme.dart';
 import 'package:itinerary_ai/presentation/providers/auth_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
