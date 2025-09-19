@@ -56,20 +56,59 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     width: 42,
                     height: 42,
                   ),
-                  SizedBox(
-                    width: 10,
+                  Text(
+                    'Itinera AI', 
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: AppTheme.primaryColor,
+                    ),
                   ),
-                  Text('Itinera AI', style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),
                 ],
               ),
               const SizedBox(height: 20),
-              Text('Hi, Welcome Back', style: Theme.of(context).textTheme.displayLarge, textAlign: TextAlign.center),
-              Text('Login to your account', style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.center),
+              Text(
+                'Hi, Welcome Back', 
+                style: Theme.of(context).textTheme.displayLarge!.copyWith(
+                  fontWeight: FontWeight.w900
+                ), 
+                textAlign: TextAlign.center
+              ),
+              SizedBox(
+                height: 14,
+              ),
+              Text(
+                'Login to your account', 
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: Colors.grey[500]!.withOpacity(0.8),
+                  fontWeight: FontWeight.bold
+                ), 
+                textAlign: TextAlign.center
+              ),
               const SizedBox(height: 40),
               const GoogleAuthButton(text: 'Sign in with Google'),
-              const SizedBox(height: 20),
-              Text('or Sign in with Email', style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
+              Row(
+                children: [
+                  Expanded(child: Divider(color: Colors.grey.shade300, thickness: 0.5,)),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Text(
+                    'or Sign in with Email', 
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: Colors.grey[500]!.withOpacity(0.8),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ), 
+                    textAlign: TextAlign.center
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Expanded(child: Divider(color:Colors.grey.shade300)),
+                ],
+              ),
+              const SizedBox(height: 30),
               AuthForm(
                 isLogin: true,
                 emailController: _emailController,
@@ -78,7 +117,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: _handleLogin,
-                child: const Text('Login'),
+                style: ElevatedButton.styleFrom(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(16)),
+                ),
+                child: const Text('Login', style: TextStyle(fontSize: 20),),
               ),
               const SizedBox(height: 20),
                Row(

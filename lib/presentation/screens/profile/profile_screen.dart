@@ -34,7 +34,7 @@ class ProfileScreen extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: Colors.grey.withOpacity(0.6),
                     blurRadius: 10,
                   )
                 ],
@@ -61,25 +61,35 @@ class ProfileScreen extends ConsumerWidget {
                   const Divider(height: 30),
                   _buildUsageRow('Request Tokens', requestTokens, maxTokens, context, AppTheme.primaryColor),
                   const SizedBox(height: 16),
-                  _buildUsageRow('Response Tokens', responseTokens, maxTokens, context, Colors.redAccent),
-                  const Divider(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Total Cost', style: Theme.of(context).textTheme.bodyLarge),
-                      Text('\$${totalCost.toStringAsFixed(2)} USD', style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.green, fontWeight: FontWeight.bold)),
-                    ],
+                  _buildUsageRow('Response Tokens', responseTokens, maxTokens, context, Colors.red.withOpacity(0.7)),
+                  const SizedBox(height: 16),
+                  Container(
+                    width: double.infinity,
+                    height: 60,
+                    padding: EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Color(0xfff6f3f0),
+                      borderRadius: BorderRadius.circular(8)
+                      
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Total Cost', style: Theme.of(context).textTheme.bodyLarge),
+                        Text('\$${totalCost.toStringAsFixed(2)} USD', style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.green.shade700, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
                   )
                 ],
               ),
             ),
             const SizedBox(height: 30),
-            TextButton.icon(
+            ElevatedButton.icon(
               onPressed: () => ref.read(authProvider.notifier).logout(context),
-              icon: const Icon(Icons.logout, color: Colors.red),
-              label: const Text('Log Out', style: TextStyle(color: Colors.red)),
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.red.withOpacity(0.1),
+              icon: Icon(Icons.logout, color: Colors.red[800]),
+              label: Text('Log Out', style: TextStyle(color: Colors.red[800])),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))
               ),
@@ -91,24 +101,39 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   Widget _buildUsageRow(String title, double value, double max, BuildContext context, Color progressColor) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(title, style: Theme.of(context).textTheme.bodyLarge),
-            Text('${value.toInt()}/${max.toInt()}', style: Theme.of(context).textTheme.bodyMedium),
-          ],
-        ),
-        const SizedBox(height: 8),
-        LinearProgressIndicator(
-          value: value / max,
-          backgroundColor: Colors.grey.shade200,
-          valueColor: AlwaysStoppedAnimation<Color>(progressColor),
-          borderRadius: BorderRadius.circular(10),
-          minHeight: 8,
-        ),
-      ],
+    return Container(
+      width: double.infinity,
+      height: 70,
+      padding: EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Color(0xfff6f3f0),
+        borderRadius: BorderRadius.circular(8)
+        
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(title, style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.black, fontWeight: FontWeight.w600)),
+              Text(
+                '${value.toInt()}/${max.toInt()}', 
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: Colors.black, fontWeight: FontWeight.w600
+                )
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          LinearProgressIndicator(
+            value: value / max,
+            backgroundColor: Colors.white,
+            valueColor: AlwaysStoppedAnimation<Color>(progressColor),
+            borderRadius: BorderRadius.circular(10),
+            minHeight: 8,
+          ),
+        ],
+      ),
     );
   }
 }

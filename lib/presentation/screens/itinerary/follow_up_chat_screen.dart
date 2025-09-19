@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:itinerary_ai/core/theme/app_theme.dart';
 import 'package:itinerary_ai/presentation/providers/auth_provider.dart';
 import 'package:itinerary_ai/presentation/providers/chat_provider.dart';
+import 'package:itinerary_ai/presentation/providers/saved_itinerary_provider.dart';
 
 class FollowUpChatScreen extends ConsumerStatefulWidget {
   final Map<String, String> initialData;
@@ -120,7 +121,7 @@ class _FollowUpChatScreenState extends ConsumerState<FollowUpChatScreen> {
                   SizedBox(
                     width: 6,
                   ),
-                  Text("Itinera AI", style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text("Itinera AI", style: const TextStyle(fontWeight: FontWeight.w900, color: Colors.black)),
                 ],
               ),
               const SizedBox(height: 8),
@@ -133,12 +134,20 @@ class _FollowUpChatScreenState extends ConsumerState<FollowUpChatScreen> {
                   ],
                 )
               else
-                Text(
-                  "Thinking..."
-                  //message.text
+                Row(
+                  children: [
+                    Icon(Icons.circle_outlined, color: Colors.amber, size: 18,),
+                    SizedBox(
+                      width: 12,
+                    ),
+                    Text(
+                      "Thinking..."
+                    ),
+                  ],
                 ),
-              // const SizedBox(height: 12),
-              // _buildActionButtons(message),
+                _buildActionButton(Icons.refresh, "Regenerate", () {
+                  ref.read(chatProvider.notifier).regenerateLastResponse();
+                })
             ],
           ),
         ),
@@ -172,7 +181,7 @@ class _FollowUpChatScreenState extends ConsumerState<FollowUpChatScreen> {
                 SizedBox(
                   width: 6,
                 ),
-                Text(message.isUser ? "You" : "Itinera AI", style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(message.isUser ? "You" : "Itinera AI", style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
               ],
             ),
             const SizedBox(height: 8),
@@ -185,8 +194,12 @@ class _FollowUpChatScreenState extends ConsumerState<FollowUpChatScreen> {
                 ],
               )
             else
-              Text(message.text),
+              Text(message.text, style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),),
             const SizedBox(height: 12),
+            const Divider(thickness: 0.4,),
+            SizedBox(
+              height: 10,
+            ),
             _buildActionButtons(message),
           ],
         ),
@@ -210,8 +223,10 @@ class _FollowUpChatScreenState extends ConsumerState<FollowUpChatScreen> {
           if (!message.isUser) ...[
             const SizedBox(width: 16),
             _buildActionButton(Icons.save_alt, "Save Offline", () {
-              // Implement save logic here
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Save not implemented yet.')));
+              final chatState = ref.read(chatProvider);
+              final initialPrompt = widget.initialData['userPrompt']!;
+              ref.read(savedItineraryProvider.notifier).saveItineraryFromChatState(chatState, initialPrompt);
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Chat saved offline!')));
             }),
             const SizedBox(width: 16),
             _buildActionButton(Icons.refresh, "Regenerate", () {
@@ -231,7 +246,7 @@ class _FollowUpChatScreenState extends ConsumerState<FollowUpChatScreen> {
         padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
         child: Row(
           children: [
-            Icon(icon, size: 16, color: Colors.grey.shade600),
+            Icon(icon, size: 16, color: Colors.grey.shade700),
             const SizedBox(width: 4),
             Text(label, style: TextStyle(color: Colors.grey.shade700, fontSize: 12)),
           ],
@@ -244,8 +259,7 @@ class _FollowUpChatScreenState extends ConsumerState<FollowUpChatScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [BoxShadow(offset: const Offset(0, -2), blurRadius: 10, color: Colors.black.withOpacity(0.05))],
+        color: Colors.transparent,
       ),
       child: SafeArea(
         child: Row(
@@ -255,9 +269,21 @@ class _FollowUpChatScreenState extends ConsumerState<FollowUpChatScreen> {
                 controller: _textController,
                 decoration: InputDecoration(
                   hintText: 'Follow up to refine',
-                  fillColor: Colors.grey.shade100,
-                  suffixIcon: const Icon(Icons.mic),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide.none),
+                  fillColor: Colors.white,
+                  suffixIcon: const Icon(Icons.mic, color: AppTheme.primaryColor,size: 28,),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(40),
+                    borderSide: BorderSide(color: AppTheme.primaryColor, width: 1.7),
+                  ),
+                  filled: true,
+                  disabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide(color: AppTheme.primaryColor, width: 1.7),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide(color: AppTheme.primaryColor, width: 1.7),
+                  ),
                 ),
                 onSubmitted: (_) => _sendMessage(),
               ),
@@ -277,182 +303,3 @@ class _FollowUpChatScreenState extends ConsumerState<FollowUpChatScreen> {
     );
   }
 }
-
-
-
-
-
-// import 'package:flutter/material.dart';
-// import 'package:itinerary_ai/core/theme/app_theme.dart';
-
-// class FollowUpChatScreen extends StatelessWidget {
-//   const FollowUpChatScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('7 days in Bali...'),
-//         actions: [
-//           Padding(
-//             padding: const EdgeInsets.only(right: 16.0),
-//             child: CircleAvatar(
-//               backgroundColor: Theme.of(context).primaryColor,
-//               child: const Text('S', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-//             ),
-//           ),
-//         ],
-//       ),
-//       body: Column(
-//         children: [
-//           Expanded(
-//             child: ListView(
-//               padding: const EdgeInsets.all(16),
-//               children: [
-//                 // User's initial prompt
-//                 _buildChatBubble(
-//                   isUser: true,
-//                   text: '7 days in Bali next April, 3 people, mid-range budget, wanted to explore less populated areas, it should be a peaceful trip!',
-//                 ),
-//                 // AI's initial response (Placeholder)
-//                 _buildChatBubble(
-//                   isUser: false,
-//                   text: 'Day 1: Arrival in Bali & Settle in Ubud...',
-//                 ),
-//                  // Error example from Figma
-//                 _buildChatBubble(
-//                   isUser: true,
-//                   text: 'Can you also include scuba-diving in the Itinerary i wanna try it!',
-//                 ),
-//                 _buildErrorBubble(),
-//               ],
-//             ),
-//           ),
-//           // Chat input field
-//           _buildChatInputField(),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Widget _buildChatBubble({required bool isUser, required String text}) {
-//     return Align(
-//       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-//       child: Container(
-//         padding: const EdgeInsets.all(16),
-//         margin: const EdgeInsets.symmetric(vertical: 8),
-//         constraints: const BoxConstraints(maxWidth: 300),
-//         decoration: BoxDecoration(
-//           color: isUser ? Colors.white : Colors.amber.shade50,
-//           borderRadius: BorderRadius.circular(16),
-//           border: isUser ? Border.all(color: Colors.grey.shade300) : null,
-//         ),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//              Text(isUser ? "You" : "Itinera AI", style: const TextStyle(fontWeight: FontWeight.bold)),
-//              const SizedBox(height: 8),
-//              Text(text),
-//              const SizedBox(height: 12),
-//              Row(
-//               mainAxisSize: MainAxisSize.min,
-//               children: [
-//                 const Icon(Icons.copy, size: 16, color: Colors.grey),
-//                 const SizedBox(width: 4),
-//                 const Text("Copy", style: TextStyle(color: Colors.grey, fontSize: 12)),
-//                  if (!isUser) ...[
-//                   const SizedBox(width: 16),
-//                   const Icon(Icons.save_alt, size: 16, color: Colors.grey),
-//                   const SizedBox(width: 4),
-//                   const Text("Save Offline", style: TextStyle(color: Colors.grey, fontSize: 12)),
-//                   const SizedBox(width: 16),
-//                   const Icon(Icons.refresh, size: 16, color: Colors.grey),
-//                   const SizedBox(width: 4),
-//                   const Text("Regenerate", style: TextStyle(color: Colors.grey, fontSize: 12)),
-//                  ]
-//               ],
-//              )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//    Widget _buildErrorBubble() {
-//     return Align(
-//       alignment: Alignment.centerLeft,
-//       child: Container(
-//         padding: const EdgeInsets.all(16),
-//         margin: const EdgeInsets.symmetric(vertical: 8),
-//         constraints: const BoxConstraints(maxWidth: 300),
-//         decoration: BoxDecoration(
-//           color: Colors.amber.shade50,
-//           borderRadius: BorderRadius.circular(16),
-//         ),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//              const Text("Itinera AI", style: TextStyle(fontWeight: FontWeight.bold)),
-//              const SizedBox(height: 8),
-//              const Row(
-//               children: [
-//                 Icon(Icons.error_outline, color: Colors.red),
-//                 SizedBox(width: 8),
-//                 Expanded(child: Text("Oops! The LLM failed to generate answer. Please regenerate.", style: TextStyle(color: Colors.red))),
-//               ],
-//              ),
-//              const SizedBox(height: 12),
-//              TextButton.icon(
-//               onPressed: () {}, 
-//               icon: const Icon(Icons.refresh, size: 16, color: Colors.grey),
-//               label: const Text("Regenerate", style: TextStyle(color: Colors.grey, fontSize: 12)))
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-
-//   Widget _buildChatInputField() {
-//     return Container(
-//       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         boxShadow: [
-//           BoxShadow(
-//             offset: const Offset(0, -2),
-//             blurRadius: 10,
-//             color: Colors.black.withOpacity(0.05),
-//           ),
-//         ],
-//       ),
-//       child: SafeArea(
-//         child: Row(
-//           children: [
-//             Expanded(
-//               child: TextField(
-//                 decoration: InputDecoration(
-//                   hintText: 'Follow up to refine',
-//                   fillColor: Colors.grey.shade100,
-//                   suffixIcon: const Icon(Icons.mic),
-//                   border: OutlineInputBorder(
-//                     borderRadius: BorderRadius.circular(30),
-//                     borderSide: BorderSide.none,
-//                   ),
-//                 ),
-//               ),
-//             ),
-//             const SizedBox(width: 8),
-//             CircleAvatar(
-//               radius: 24,
-//               backgroundColor: AppTheme.primaryColor,
-//               child: IconButton(
-//                 icon: const Icon(Icons.send, color: Colors.white),
-//                 onPressed: () {},
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

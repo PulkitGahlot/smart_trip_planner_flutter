@@ -4,6 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:itinerary_ai/core/navigation/app_router.dart';
 import 'package:itinerary_ai/core/theme/app_theme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:itinerary_ai/data/saved_conversation.dart';
 import 'package:itinerary_ai/domain/entities/itinerary.dart';
 
 Future<void> main() async {
@@ -15,6 +16,8 @@ Future<void> main() async {
   Hive.registerAdapter(ItineraryAdapter());
   Hive.registerAdapter(DayAdapter());
   Hive.registerAdapter(ItemAdapter());
+  Hive.registerAdapter(SavedConversationAdapter());
+  Hive.registerAdapter(SavedChatMessageAdapter());
   // Open the session box
   await Hive.openBox('session');
 

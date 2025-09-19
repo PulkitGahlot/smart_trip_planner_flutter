@@ -57,14 +57,65 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 30),
-              Text('✈️ Itinera AI', style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/app_icon/itinerary_ai_icon.png",
+                    fit: BoxFit.cover,
+                    width: 42,
+                    height: 42,
+                  ),
+                  Text(
+                    'Itinera AI', 
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                      fontWeight: FontWeight.w900,
+                      color: AppTheme.primaryColor,
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 20),
-              Text('Create your Account', style: Theme.of(context).textTheme.displayLarge, textAlign: TextAlign.center),
-              Text('Lets get started', style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.center),
+              Text(
+                'Create your Account', 
+                style: Theme.of(context).textTheme.displayLarge,
+                textAlign: TextAlign.center
+              ),
+              SizedBox(
+                height: 14,
+              ),
+              Text(
+                'Lets get started', 
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: Colors.grey[500]!.withOpacity(0.8),
+                  fontWeight: FontWeight.bold
+                ), 
+                textAlign: TextAlign.center
+              ),
               const SizedBox(height: 40),
               const GoogleAuthButton(text: 'Sign up with Google'),
               const SizedBox(height: 20),
-              Text('or Sign up with Email', style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
+              Row(
+                children: [
+                  Expanded(child: Divider(color: Colors.grey.shade300, thickness: 0.5,)),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Text(
+                    'or Sign up with Email', 
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: Colors.grey[500]!.withOpacity(0.8),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ), 
+                    textAlign: TextAlign.center
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Expanded(child: Divider(color:Colors.grey.shade300)),
+                ],
+              ),
               const SizedBox(height: 20),
               AuthForm(
                 isLogin: false,
@@ -75,6 +126,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: _handleSignUp,
+                style: ElevatedButton.styleFrom(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(16)),
+                ),
                 child: const Text('Sign UP'),
               ),
               const SizedBox(height: 20),

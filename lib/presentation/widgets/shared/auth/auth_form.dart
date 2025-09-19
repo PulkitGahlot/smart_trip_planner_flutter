@@ -22,6 +22,7 @@ class AuthForm extends StatefulWidget {
 class _AuthFormState extends State<AuthForm> {
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
+  bool _checkBoxtick = false;
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +66,8 @@ class _AuthFormState extends State<AuthForm> {
             obscureText: !_isConfirmPasswordVisible,
             decoration: InputDecoration(
               hintText: '••••••••',
+              fillColor: Colors.white,
+              filled: true,
               prefixIcon: const Icon(Icons.lock_outline),
               suffixIcon: IconButton(
                 icon: Icon(
@@ -78,29 +81,34 @@ class _AuthFormState extends State<AuthForm> {
         ],
          if (widget.isLogin)
           Padding(
-            padding: const EdgeInsets.only(top: 16.0),
+            padding: const EdgeInsets.only(top: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
                     Checkbox(
-                      value: false, 
-                      onChanged: (val) {},
+                      value: _checkBoxtick, 
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(5)),
+                      onChanged: (val) {
+                        setState(() {
+                          _checkBoxtick ? _checkBoxtick = false : _checkBoxtick = true;
+                        });
+                      },
                       activeColor: AppTheme.primaryColor
                     ),
-                    Text('Remember me', style: Theme.of(context).textTheme.bodyMedium),
+                    Text('Remember me', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black)),
                   ],
                 ),
                 TextButton(
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Not implemented yet.')),
+                      const SnackBar(content: Text('No UI provided.')),
                     );
                   },
                   child: Text(
                     'Forgot your password?',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppTheme.primaryColor),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red),
                   ),
                 )
               ],

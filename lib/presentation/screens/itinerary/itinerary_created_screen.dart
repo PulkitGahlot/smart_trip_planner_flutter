@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:itinerary_ai/core/theme/app_theme.dart';
 import 'package:itinerary_ai/presentation/providers/auth_provider.dart';
+import 'package:itinerary_ai/presentation/providers/chat_provider.dart';
+import 'package:itinerary_ai/presentation/providers/saved_itinerary_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ItineraryCreatedScreen extends ConsumerWidget {
@@ -51,6 +53,7 @@ class ItineraryCreatedScreen extends ConsumerWidget {
     final double latitude = (mapInfo['latitude'] as num).toDouble();
     final double longitude = (mapInfo['longitude'] as num).toDouble();
 
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
@@ -74,8 +77,13 @@ class ItineraryCreatedScreen extends ConsumerWidget {
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(itinerary['title'] as String, style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 28,)),
+            Text(
+              "Itinerary Created 🏖️", 
+              style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 28,),
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 20),
             Expanded(
               child: Container(
@@ -89,7 +97,7 @@ class ItineraryCreatedScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(day['title'], style: Theme.of(context).textTheme.headlineMedium),
+                      Text(day['title'], style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600)),
                       const SizedBox(height: 10),
                       ...List.generate((day['items'] as List).length, (index) {
                         final item = day['items'][index];
@@ -103,8 +111,8 @@ class ItineraryCreatedScreen extends ConsumerWidget {
                                 child: Text.rich(
                                   TextSpan(
                                     children: [
-                                      TextSpan(text: '${item['type']}: ', style: const TextStyle(fontWeight: FontWeight.bold)),
-                                      TextSpan(text: item['description']),
+                                      TextSpan(text: '${item['type']}: ', style: const TextStyle(fontWeight: FontWeight.w900, color: Colors.black)),
+                                      TextSpan(text: item['description'], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600)),
                                     ],
                                   ),
                                 ),
@@ -126,22 +134,39 @@ class ItineraryCreatedScreen extends ConsumerWidget {
                             children: [
                               const Row(
                                 children: [
-                                  Icon(Icons.map_outlined, color: Colors.pink),
+                                  Icon(Icons.pin_drop, color: Colors.red),
                                   SizedBox(width: 8),
-                                  Text('Open in maps', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(
+                                    'Open in maps', 
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold, 
+                                      color: Colors.blue, 
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: Colors.blue,
+                                      decorationThickness: 2,
+                                      )
+                                    ),
                                   SizedBox(width: 4),
-                                  Icon(Icons.open_in_new, size: 16)
+                                  Icon(Icons.open_in_new, size: 16,color: Colors.blue,)
                                 ],
                               ),
                               const SizedBox(height: 8),
-                              Column(
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '${mapInfo['origin']} to ${mapInfo['destination']}'
+                                    '${mapInfo['origin']} to ${mapInfo['destination']}',
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
                                   ),
-                                  Text(mapInfo['duration']),
+                                  SizedBox(
+                                    width: 4,
+                                  ),
+                                  Text("|"),
+                                  SizedBox(
+                                    width: 4,
+                                  ),
+                                  Text(mapInfo['duration'], style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),),
                                 ],
                               )
                             ],
@@ -171,18 +196,33 @@ class ItineraryCreatedScreen extends ConsumerWidget {
                     'aiResponse': initialAiResponse
                   });
                 },
-                label: const Text('Follow up to refine'),
+                style: ElevatedButton.styleFrom(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(16)),
+                ),
+                label: const Text('Follow up to refine', style: TextStyle(fontSize: 18),),
               ),
             ),
             const SizedBox(height: 10),
             TextButton.icon(
               onPressed: () {
-                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Itinerary saved offline!'))
-                );
+                final initialAiResponse = (itinerary['days'][0]['items'] as List)
+                                .map((item) => "• ${item['type']}: ${item['description']}")
+                                .join('\n');
+                  final fullAiResponse = "Day 1: ${itinerary['days'][0]['title']}\n$initialAiResponse";
+                  
+                  final tempChatState = ChatState(messages: [
+                    ChatMessage(text: originalPrompt, isUser: true),
+                    ChatMessage(text: fullAiResponse, isUser: false),
+                  ]);
+
+                  ref.read(savedItineraryProvider.notifier).saveItineraryFromChatState(tempChatState, originalPrompt);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Itinerary saved offline!'))
+                  );
               },
-              icon: const Icon(Icons.save_alt),
-              label: const Text('Save Offline'),
+              icon: const Icon(Icons.save_alt,color: Colors.black,),
+              label: const Text('Save Offline', style: TextStyle(color: Colors.black),),
             )
           ],
         ),

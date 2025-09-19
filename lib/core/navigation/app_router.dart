@@ -1,12 +1,14 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:itinerary_ai/data/saved_conversation.dart';
 import 'package:itinerary_ai/presentation/screens/auth/login_screen.dart';
 import 'package:itinerary_ai/presentation/screens/auth/signup_screen.dart';
 import 'package:itinerary_ai/presentation/screens/home/home_screen.dart';
 import 'package:itinerary_ai/presentation/screens/itinerary/creating_itinerary_screen.dart';
 import 'package:itinerary_ai/presentation/screens/itinerary/follow_up_chat_screen.dart';
 import 'package:itinerary_ai/presentation/screens/itinerary/itinerary_created_screen.dart';
+import 'package:itinerary_ai/presentation/screens/itinerary/saved_itinerary_view_screen.dart';
 import 'package:itinerary_ai/presentation/screens/profile/profile_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -63,6 +65,13 @@ final routerProvider = Provider<GoRouter>((ref) {
           final initialData = state.extra as Map<String, String>;
           // Pass it to the FollowUpChatScreen
           return FollowUpChatScreen(initialData: initialData);
+        },
+      ),
+      GoRoute(
+        path: '/saved-itinerary-view',
+        builder: (context, state) {
+          final conversation = state.extra as SavedConversation;
+          return SavedItineraryViewScreen(conversation: conversation);
         },
       ),
     ],

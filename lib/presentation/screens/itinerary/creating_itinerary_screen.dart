@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:itinerary_ai/core/theme/app_theme.dart';
 import 'package:itinerary_ai/data/gemini_ai_service.dart';
+import 'package:itinerary_ai/presentation/providers/auth_provider.dart';
 
 class CreatingItineraryScreen extends ConsumerStatefulWidget {
   final String prompt;
@@ -32,7 +34,7 @@ class _CreatingItineraryScreenState extends ConsumerState<CreatingItineraryScree
     } catch (e) {
       // Handle error, maybe show a snackbar and pop
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Something went wrong. Try creating again")));
         context.pop();
       }
     }
@@ -40,13 +42,26 @@ class _CreatingItineraryScreenState extends ConsumerState<CreatingItineraryScree
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authProvider);
+    final userEmail = authState.currentUserEmail ?? 'guest@email.com';
+    final userName = userEmail.split('@')[0];
+    final userInitial = userName.isNotEmpty ? userName[0].toUpperCase() : 'G';
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text(''),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/home'),
-        ),
+        title: const Text('Home'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+                      onTap: () => context.push('/profile'),
+                      child: CircleAvatar(
+                        backgroundColor: AppTheme.primaryColor,
+                        child: Text(userInitial, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -65,9 +80,13 @@ class _CreatingItineraryScreenState extends ConsumerState<CreatingItineraryScree
                 child: const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(),
+                    CircularProgressIndicator(color: AppTheme.primaryColor,),
                     SizedBox(height: 20),
-                    Text('Curating a perfect plan for you...', textAlign: TextAlign.center),
+                    Text(
+                      'Curating a perfect plan for you...', 
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black,),
+                    ),
                   ],
                 ),
               ),
@@ -75,10 +94,15 @@ class _CreatingItineraryScreenState extends ConsumerState<CreatingItineraryScree
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.forum_outlined),
                 onPressed: null, // Disabled
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.grey.shade300),
-                child: const Text('Follow up to refine'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey.shade300,
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(16)),
+                ),
+                label: const Text('Follow up to refine'),
               ),
             ),
             const SizedBox(height: 10),
