@@ -1,4 +1,3 @@
-// lib/presentation/widgets/auth/google_auth_button.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,7 +14,7 @@ class GoogleAuthButton extends StatelessWidget {
         width: 32,
         height: 32,
         fit: BoxFit.cover,
-      ), // Image.asset('assets/google_logo.png', height: 24), // Add a google logo in assets
+      ),
       label: Text(
         text,
         style: GoogleFonts.manrope(

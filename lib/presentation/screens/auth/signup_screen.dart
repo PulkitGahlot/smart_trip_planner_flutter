@@ -94,10 +94,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               ),
               const SizedBox(height: 40),
               const GoogleAuthButton(text: 'Sign up with Google'),
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
               Row(
                 children: [
-                  Expanded(child: Divider(color: Colors.grey.shade300, thickness: 0.5,)),
+                  Expanded(child: Divider(color: Colors.grey.shade300)),
                   SizedBox(
                     width: 20,
                   ),

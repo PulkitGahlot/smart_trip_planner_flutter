@@ -28,11 +28,11 @@ class _CreatingItineraryScreenState extends ConsumerState<CreatingItineraryScree
         context.replace('/itinerary-created', extra: {
           'itinerary': result['itinerary'],
           'wasVoiceInput': false,
-          'originalPrompt': widget.prompt // Pass the original prompt forward
+          'originalPrompt': widget.prompt // Passing the original prompt forward
         });
       }
     } catch (e) {
-      // Handle error, maybe show a snackbar and pop
+      // Handling error, show a snackbar and pop
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Something went wrong. Try creating again")));
         context.pop();

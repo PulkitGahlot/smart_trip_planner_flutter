@@ -1,4 +1,3 @@
-// lib/presentation/providers/chat_provider.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:itinerary_ai/data/gemini_ai_service.dart';
 
@@ -49,23 +48,23 @@ class ChatNotifier extends StateNotifier<ChatState> {
       ChatMessage(text: text, isUser: true)
     ]);
 
-    // Add a loading indicator for the AI's response
+    // Adding a loading indicator for the AI's response
     state = state.copyWith(
         messages: [...state.messages, ChatMessage(text: '', isUser: false, isLoading: true)]);
 
     try {
-      // Get the full chat history to provide context to the AI
+      // Getting the full chat history to provide context to the AI
       final chatHistory = state.messages.map((m) => m.text).join('\n');
       final result = await _aiService.refineItinerary(chatHistory);
       final aiResponse = result['itinerary']['response'] as String;
 
-      // Remove the loading indicator and add the AI's actual response
+      // Removing the loading indicator and add the AI's actual response
       state.messages.removeLast();
       state = state.copyWith(
           messages: [...state.messages, ChatMessage(text: aiResponse, isUser: false)]);
 
     } catch (e) {
-      // Remove the loading indicator and show an error message instead
+      // Removing the loading indicator and show an error message instead
       state.messages.removeLast();
       state = state.copyWith(messages: [
         ...state.messages,
@@ -78,11 +77,11 @@ class ChatNotifier extends StateNotifier<ChatState> {
   Future<void> regenerateLastResponse() async {
     if (state.messages.length < 2) return; // Cannot regenerate if there's no history
 
-    // Remove the last AI message (whether it was a success or error)
+    // Removing the last AI message (whether it was a success or error)
     state.messages.removeLast();
     // Re-run the sendMessage logic with the last user prompt
     final lastUserMessage = state.messages.last.text;
-    state.messages.removeLast(); // Remove the last user message to avoid duplication
+    state.messages.removeLast(); // Removing the last user message to avoid duplication
     
     await sendMessage(lastUserMessage);
   }

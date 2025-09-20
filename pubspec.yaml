@@ -47,6 +47,7 @@ dependencies:
   flutter_dotenv: ^6.0.0
   http: ^1.5.0
   flutter_svg: ^2.2.1
+  circular_gradient_spinner: ^0.0.3
 
 dev_dependencies:
   flutter_test:

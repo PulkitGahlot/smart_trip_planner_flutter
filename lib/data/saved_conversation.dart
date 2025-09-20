@@ -1,4 +1,3 @@
-// lib/domain/entities/saved_conversation.dart
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 

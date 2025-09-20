@@ -84,7 +84,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ), 
                 textAlign: TextAlign.center
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 55),
               const GoogleAuthButton(text: 'Sign in with Google'),
               const SizedBox(height: 30),
               Row(
